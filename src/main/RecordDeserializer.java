@@ -1,8 +1,6 @@
 package main;
 
 import com.google.gson.*;
-import netscape.javascript.JSObject;
-
 import java.lang.reflect.Type;
 
 public class RecordDeserializer implements JsonDeserializer {

@@ -1,7 +1,6 @@
 package main;
 
 import com.google.gson.*;
-
 import java.lang.reflect.Type;
 
 public class PartyDeserializer implements JsonDeserializer {

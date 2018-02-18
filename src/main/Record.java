@@ -1,7 +1,5 @@
 package main;
 
-import com.google.gson.annotations.Expose;
-
 public class Record {
     private String file_id;
     private String case_type;
