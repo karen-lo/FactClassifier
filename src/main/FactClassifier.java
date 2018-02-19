@@ -1,14 +1,19 @@
 package main;
 
 import java.io.*;
+import java.lang.reflect.Array;
 import java.util.*;
 import com.google.gson.*;
 
 public class FactClassifier {
     private Record[] records;
+    private ArrayList<String> accuser_aliases;
+    private ArrayList<String> accusee_aliases;
 
     public FactClassifier() {
         this.records = null;
+        this.accuser_aliases = new ArrayList<>();
+        this.accusee_aliases = new ArrayList<>();
     }
 
     public void setRecords(String filename) throws FileNotFoundException {

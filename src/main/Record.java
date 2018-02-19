@@ -54,9 +54,11 @@ public class Record {
         }
     }
 
-    public String getFile_id() {
-        return file_id;
-    }
+    public String getFile_id() { return file_id; }
+
+    public String[] getFacts() { return facts; }
+
+    public String[] getHolding() { return holding; }
 
     public ArrayList<Party> getPlaintiffs() {
         return plaintiffs;
@@ -65,5 +67,4 @@ public class Record {
     public ArrayList<Party> getDefendants() {
         return defendants;
     }
-
 }
