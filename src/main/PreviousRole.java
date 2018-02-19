@@ -8,4 +8,8 @@ public class PreviousRole {
         this.role = r;
         this.caseNote = n;
     }
+
+    public String getRole() {
+        return this.role;
+    }
 }

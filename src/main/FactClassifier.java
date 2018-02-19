@@ -36,7 +36,6 @@ public class FactClassifier {
 
         for(int i=0; i<record_strings.size(); i++) {
             records[i] = gson.fromJson(record_strings.get(i), Record.class);
-            System.out.println(records[i].getFile_id());
         }
     }
 

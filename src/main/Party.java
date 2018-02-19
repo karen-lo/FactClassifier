@@ -22,4 +22,16 @@ public class Party {
         this.role = role;
         this.previousRoles = prevR;
     }
+
+    public String getRole() {
+        return this.role;
+    }
+
+    public PreviousRole[] getPreviousRoles() {
+        return this.previousRoles;
+    }
+
+    public String getName() {
+        return this.name;
+    }
 }

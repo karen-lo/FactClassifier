@@ -19,7 +19,7 @@ public class PartyDeserializer implements JsonDeserializer {
         temp = j.get("name");
         if(temp != null)  n = temp.getAsString();
         temp = j.get("role");
-        if(temp != null)  n = temp.getAsString();
+        if(temp != null)  r = temp.getAsString();
         PreviousRole[] pr = jsonDeserializationContext.deserialize(j.get("previousRoles"), PreviousRole[].class);
 
         return new Party(id, n, r, pr);

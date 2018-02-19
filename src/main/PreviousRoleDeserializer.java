@@ -13,9 +13,9 @@ public class PreviousRoleDeserializer implements JsonDeserializer {
         JsonElement temp;
 
         temp = j.get("role");
-        if(temp != null) temp.getAsString();
+        if(temp != null) r = temp.getAsString();
         temp = j.get("caseNote");
-        if(temp != null) temp.getAsString();
+        if(temp != null) note = temp.getAsString();
         return new PreviousRole(r, note);
     }
 }
