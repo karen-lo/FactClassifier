@@ -12,15 +12,15 @@ public class ClassiferTest {
         fc.setRecords(args[0]);
 
         Record[] records = fc.getRecords();
-        for(Record r : records) {
-            System.out.println(r.getFile_id());
-            r.setPlaintiffsAndDefendants();
-            ArrayList<Party> p = r.getPlaintiffs();
-            ArrayList<Party> d = r.getDefendants();
+        for(Record rec : records) {
+            System.out.println(rec.getFile_id());
+            rec.setParties();
+            ArrayList<Party> c = rec.getComplainants();
+            ArrayList<Party> r = rec.getRespondants();
 
-            System.out.println("Plaintiffs: ");
-            for(Party person : p) {
-                System.out.print(person.getName() + " AKA ");
+            System.out.println("Those suing: ");
+            for(Party person : c) {
+                System.out.print(person.getName() + " is a " + person.getRole() + ", AKA ");
                 person.setAliases();
 
                 HashSet<String> aliases = person.getAliases();
@@ -30,9 +30,9 @@ public class ClassiferTest {
                 System.out.println();
             }
 
-            System.out.println("Defendants: ");
-            for(Party person : d) {
-                System.out.print(person.getName() + " AKA ");
+            System.out.println("Those being sued: ");
+            for(Party person : r) {
+                System.out.print(person.getName() + " is a " + person.getRole() + ", AKA ");
                 person.setAliases();
 
                 HashSet<String> aliases = person.getAliases();
@@ -42,6 +42,20 @@ public class ClassiferTest {
                 System.out.println();
             }
             System.out.println("\n");
+
+            rec.classifyHolding();
+            String[] h_class = rec.getHoldingClassification();
+            System.out.println("Holding Classifications:");
+            for(String sent_class : h_class) {
+                System.out.println(sent_class);
+            }
+
+            rec.classifyFacts();
+            String[] f_class = rec.getFactsClassification();
+            System.out.println("Facts Classifications:");
+            for(String fact_class : f_class) {
+                System.out.println(fact_class);
+            }
         }
     }
 }
