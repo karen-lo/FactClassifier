@@ -3,13 +3,14 @@ import java.util.ArrayList;
 import java.util.HashSet;
 
 import main.FactClassifier;
+import main.Metadata;
 import main.Party;
 import main.Record;
 
 public class ClassiferTest {
     public static void main(String[] args) throws FileNotFoundException {
         FactClassifier fc = new FactClassifier();
-        fc.setRecords(args[0]);
+        fc.deseriaizeRecords(args[0]);
 
         Record[] records = fc.getRecords();
         for(Record rec : records) {
@@ -44,18 +45,20 @@ public class ClassiferTest {
             System.out.println("\n");
 
             rec.classifyHolding();
-            String[] h_class = rec.getHoldingClassification();
+            Metadata[] h_class = rec.getHoldingClassification();
             System.out.println("Holding Classifications:");
-            for(String sent_class : h_class) {
-                System.out.println(sent_class);
+            for(Metadata sent_class : h_class) {
+                System.out.println(sent_class.getSubject());
             }
 
             rec.classifyFacts();
-            String[] f_class = rec.getFactsClassification();
+            Metadata[] f_class = rec.getFactsClassification();
             System.out.println("Facts Classifications:");
-            for(String fact_class : f_class) {
-                System.out.println(fact_class);
+            for(Metadata fact_class : f_class) {
+                System.out.println(fact_class.getSubject());
             }
         }
+
+        fc.serializeResults(args[1]);
     }
 }

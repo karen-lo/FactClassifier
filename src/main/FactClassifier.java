@@ -11,7 +11,24 @@ public class FactClassifier {
         this.records = null;
     }
 
-    public void setRecords(String filename) throws FileNotFoundException {
+    public void serializeResults(String filename) throws FileNotFoundException {
+        PrintWriter writer = new PrintWriter(filename);
+        GsonBuilder gsonBlder = new GsonBuilder();
+
+        gsonBlder.registerTypeAdapter(Record.class, new RecordSerializer());
+        gsonBlder.registerTypeAdapter(Metadata.class, new MetadataSerializer());
+
+        Gson gson = gsonBlder.create();
+
+        for(Record record : records) {
+            writer.println(gson.toJson(record));
+//            System.out.println(gson.toJson(record));
+        }
+
+        writer.close();
+    }
+
+    public void deseriaizeRecords(String filename) throws FileNotFoundException {
         File f = new File(filename);
         ArrayList<String> record_strings = new ArrayList<>();
 

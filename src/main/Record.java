@@ -10,33 +10,47 @@ public class Record {
     private Party[] parsed_parties;
     private ArrayList<Party> complainants;
     private ArrayList<Party> respondents;
-    private String[] holding_classification;
-    private String[] facts_classification;
+    private Metadata[] holding_classification;
+    private Metadata[] facts_classification;
 
 
     public Record(String f_id, String t, String[] h, String[] f, Party[] p) {
         this.file_id = f_id;
         this.case_type = t;
-        this.holding = h;
-        this.facts = f;
+
+        if(h != null) {
+            this.holding = h;
+            this.holding_classification = new Metadata[this.holding.length];
+        }
+        else {
+            this.holding = new String[0];
+            this.holding_classification = new Metadata[0];
+        }
+
+        if(f != null) {
+            this.facts = f;
+            this.facts_classification = new Metadata[this.facts.length];
+        } else {
+            this.facts = new String[0];
+            this.facts_classification = new Metadata[0];
+        }
+
         this.parsed_parties = p;
         this.complainants = new ArrayList<>();
         this.respondents = new ArrayList<>();
-        this.holding_classification = new String[this.holding.length];
-        this.facts_classification = new String[this.facts.length];
     }
 
     public void classifyHolding() {
         for(int i=0; i<this.holding.length; i++) {
             String sentence = this.holding[i];
-            this.holding_classification[i] = classifySentence(sentence);
+            this.holding_classification[i] = new Metadata(classifySentence(sentence));
         }
     }
 
     public void classifyFacts() {
         for(int i=0; i<this.facts.length; i++) {
             String fact = this.facts[i];
-            this.facts_classification[i] = classifySentence(fact);
+            this.facts_classification[i] = new Metadata(classifySentence(fact));
         }
     }
 
@@ -68,7 +82,6 @@ public class Record {
                 }
             }
         }
-
         return "Unknown";
     }
 
@@ -110,9 +123,9 @@ public class Record {
 
     public String getFile_id() { return file_id; }
 
-    public String[] getFactsClassification() { return this.facts_classification; }
+    public Metadata[] getFactsClassification() { return this.facts_classification; }
 
-    public String[] getHoldingClassification() { return this.holding_classification; }
+    public Metadata[] getHoldingClassification() { return this.holding_classification; }
 
     public ArrayList<Party> getComplainants() {
         return this.complainants;
