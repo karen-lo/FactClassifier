@@ -43,46 +43,46 @@ public class Record {
     public void classifyHolding() {
         for(int i=0; i<this.holding.length; i++) {
             String sentence = this.holding[i];
-            this.holding_classification[i] = new Metadata(classifySentence(sentence));
+            this.holding_classification[i] = classifySentence(sentence);
         }
     }
 
     public void classifyFacts() {
         for(int i=0; i<this.facts.length; i++) {
             String fact = this.facts[i];
-            this.facts_classification[i] = new Metadata(classifySentence(fact));
+            this.facts_classification[i] = classifySentence(fact);
         }
     }
 
-    private String classifySentence(String s) {
+    private Metadata classifySentence(String s) {
         String[] terms = s.split("\\s+", 0);
 
         for(String t : terms) {
             for(Party complainant : this.complainants) {
                 if(complainant.getAliases().contains(t)) {
-                    return translateRole(t, complainant);
+                    return new Metadata(translateRole(t, complainant), complainant.getName());
                 }
 
                 for(String alias : complainant.getAliases()) {
                     if(t.contains(alias)) {
-                        return translateRole(t, complainant);
+                        return new Metadata(translateRole(t, complainant), complainant.getName());
                     }
                 }
             }
 
             for(Party respondent : this.respondents) {
                 if(respondent.getAliases().contains(t)) {
-                    return translateRole(t, respondent);
+                    return new Metadata(translateRole(t, respondent), respondent.getName());
                 }
 
                 for(String alias : respondent.getAliases()) {
                     if(t.contains(alias)) {
-                        return translateRole(t, respondent);
+                        return new Metadata(translateRole(t, respondent), respondent.getName());
                     }
                 }
             }
         }
-        return "Unknown";
+        return new Metadata("Unknown", "Unknown");
     }
 
     private String translateRole(String s, Party p) {

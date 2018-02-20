@@ -52,6 +52,7 @@ public class FactClassifier {
         this.records = new Record[record_strings.size()];
 
         for(int i=0; i<record_strings.size(); i++) {
+            System.out.println("line " + (i+1));
             records[i] = gson.fromJson(record_strings.get(i), Record.class);
         }
     }

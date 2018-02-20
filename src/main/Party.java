@@ -24,7 +24,11 @@ public class Party {
         this.id = id;
         this.name = name;
         this.role = role;
-        this.previousRoles = prevR;
+        if(prevR != null) {
+            this.previousRoles = prevR;
+        } else {
+            this.previousRoles = new PreviousRole[0];
+        }
         this.aliases = new HashSet<>();
         this.aliases.add(name);
     }
