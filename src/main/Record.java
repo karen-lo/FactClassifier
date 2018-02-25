@@ -1,11 +1,18 @@
 package main;
 
-import edu.stanford.nlp.io.IOUtils;
+import edu.stanford.nlp.ling.CoreAnnotation;
+import edu.stanford.nlp.ling.CoreAnnotations;
+import edu.stanford.nlp.ling.IndexedWord;
 import edu.stanford.nlp.pipeline.Annotation;
 import edu.stanford.nlp.pipeline.StanfordCoreNLP;
+import edu.stanford.nlp.semgraph.SemanticGraph;
+import edu.stanford.nlp.semgraph.SemanticGraphCoreAnnotations;
+import edu.stanford.nlp.semgraph.SemanticGraphEdge;
+import edu.stanford.nlp.util.CoreMap;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Properties;
 
 public class Record {
@@ -18,6 +25,9 @@ public class Record {
     private ArrayList<Party> respondents;
     private Metadata[] holding_classification;
     private Metadata[] facts_classification;
+
+    private Properties property;
+    private StanfordCoreNLP pipeline;
 
 
     public Record(String f_id, String t, String[] h, String[] f, Party[] p) {
@@ -44,6 +54,13 @@ public class Record {
         this.parsed_parties = p;
         this.complainants = new ArrayList<>();
         this.respondents = new ArrayList<>();
+
+        this.property = new Properties();
+        this.property.setProperty("annotators", "tokenize, ssplit, pos, depparse");
+        this.property.setProperty("pos.model", "edu/stanford/nlp/models/pos-tagger/chinese-distsim/chinese-distsim.tagger");
+        this.property.setProperty("depparse.model", "edu/stanford/nlp/models/parser/nndep/UD_Chinese.gz");
+        this.property.setProperty("depparse.language", "chinese");
+        this.pipeline = new StanfordCoreNLP(this.property);
     }
 
     public void classifyHolding() {
@@ -61,18 +78,32 @@ public class Record {
     }
 
     private Metadata classifySentence(String s) {
-        Properties property = new Properties();
-        property.setProperty("annotators", "depparse");
-//        try {
-//            property.load(IOUtils.readerFromString("CoreNLP/src/edu/stanford/nlp/pipeline/StanfordCoreNLP-chinese.properties"));
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        }
-        StanfordCoreNLP pipeline = new StanfordCoreNLP(property);
-
         /* Annotate sentence */
-        Annotation annotated_s = new Annotation(s);
-        pipeline.annotate(annotated_s);
+        Annotation sentence = new Annotation(s);
+        pipeline.annotate(sentence);
+
+        List<CoreMap> annotated_s = sentence.get(CoreAnnotations.SentencesAnnotation.class);
+
+        int sentNo = 1;
+        for(CoreMap a : annotated_s) {
+            System.out.println("Sentence #" + sentNo + " tokens:");
+//            for(CoreMap token : a.get(CoreAnnotations.TokensAnnotation.class)) {
+//                System.out.println(token.toShorterString("Text", "CharacterOffsetBegin", "CharacterOffset", "Index", "PartOfSpeech", "NamedEntityTag"));
+//            }
+            System.out.println("Sentence #" + sentNo + " basic dependencies are:");
+            SemanticGraph dependencies = a.get(SemanticGraphCoreAnnotations.BasicDependenciesAnnotation.class);
+            IndexedWord root = dependencies.getFirstRoot();
+//            System.out.println(a.get(SemanticGraphCoreAnnotations.BasicDependenciesAnnotation.class).toString(SemanticGraph.OutputFormat.LIST));
+            System.out.println(root.toString());
+            for(SemanticGraphEdge e : dependencies.edgeIterable()) {
+                if(e.getGovernor().word().equals(root.word()) && e.getRelation().toString().equals("nsubj")) {
+                    System.out.println(e.getDependent().word());
+                }
+            }
+
+            sentNo++;
+        }
+
 
         return new Metadata("Unknown", "Unknown");
 
