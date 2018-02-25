@@ -1,6 +1,12 @@
 package main;
 
+import edu.stanford.nlp.io.IOUtils;
+import edu.stanford.nlp.pipeline.Annotation;
+import edu.stanford.nlp.pipeline.StanfordCoreNLP;
+
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Properties;
 
 public class Record {
     private String file_id;
@@ -55,8 +61,22 @@ public class Record {
     }
 
     private Metadata classifySentence(String s) {
-        String[] terms = s.split("\\s+", 0);
+        Properties property = new Properties();
+        property.setProperty("annotators", "depparse");
+//        try {
+//            property.load(IOUtils.readerFromString("CoreNLP/src/edu/stanford/nlp/pipeline/StanfordCoreNLP-chinese.properties"));
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
+        StanfordCoreNLP pipeline = new StanfordCoreNLP(property);
 
+        /* Annotate sentence */
+        Annotation annotated_s = new Annotation(s);
+        pipeline.annotate(annotated_s);
+
+        return new Metadata("Unknown", "Unknown");
+
+        /*String[] terms = s.split("\\s+", 0);
         for(String t : terms) {
             for(Party complainant : this.complainants) {
                 if(complainant.getAliases().contains(t)) {
@@ -82,7 +102,7 @@ public class Record {
                 }
             }
         }
-        return new Metadata("Unknown", "Unknown");
+        return new Metadata("Unknown", "Unknown");*/
     }
 
     private String translateRole(String s, Party p) {
