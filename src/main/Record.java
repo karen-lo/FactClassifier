@@ -1,6 +1,5 @@
 package main;
 
-import edu.stanford.nlp.ling.CoreAnnotation;
 import edu.stanford.nlp.ling.CoreAnnotations;
 import edu.stanford.nlp.ling.IndexedWord;
 import edu.stanford.nlp.pipeline.Annotation;
@@ -10,8 +9,8 @@ import edu.stanford.nlp.semgraph.SemanticGraphCoreAnnotations;
 import edu.stanford.nlp.semgraph.SemanticGraphEdge;
 import edu.stanford.nlp.util.CoreMap;
 
-import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Properties;
 
@@ -83,76 +82,46 @@ public class Record {
         pipeline.annotate(sentence);
 
         List<CoreMap> annotated_s = sentence.get(CoreAnnotations.SentencesAnnotation.class);
+        if(annotated_s.size() == 0) return new Metadata("");
 
-        int sentNo = 1;
-        for(CoreMap a : annotated_s) {
-            System.out.println("Sentence #" + sentNo + " tokens:");
-//            for(CoreMap token : a.get(CoreAnnotations.TokensAnnotation.class)) {
-//                System.out.println(token.toShorterString("Text", "CharacterOffsetBegin", "CharacterOffset", "Index", "PartOfSpeech", "NamedEntityTag"));
-//            }
-            System.out.println("Sentence #" + sentNo + " basic dependencies are:");
-            SemanticGraph dependencies = a.get(SemanticGraphCoreAnnotations.BasicDependenciesAnnotation.class);
-            IndexedWord root = dependencies.getFirstRoot();
-//            System.out.println(a.get(SemanticGraphCoreAnnotations.BasicDependenciesAnnotation.class).toString(SemanticGraph.OutputFormat.LIST));
-            System.out.println(root.toString());
-            for(SemanticGraphEdge e : dependencies.edgeIterable()) {
-                if(e.getGovernor().word().equals(root.word()) && e.getRelation().toString().equals("nsubj")) {
-                    System.out.println(e.getDependent().word());
-                }
-            }
+        CoreMap m = annotated_s.get(0);
+        SemanticGraph dependencies = m.get(SemanticGraphCoreAnnotations.BasicDependenciesAnnotation.class);
+        IndexedWord root = dependencies.getFirstRoot();
+        Metadata metadata = new Metadata(root.word());
 
-            sentNo++;
-        }
-
-
-        return new Metadata("Unknown", "Unknown");
-
-        /*String[] terms = s.split("\\s+", 0);
-        for(String t : terms) {
-            for(Party complainant : this.complainants) {
-                if(complainant.getAliases().contains(t)) {
-                    return new Metadata(translateRole(t, complainant), complainant.getName());
-                }
-
-                for(String alias : complainant.getAliases()) {
-                    if(t.contains(alias)) {
-                        return new Metadata(translateRole(t, complainant), complainant.getName());
-                    }
-                }
-            }
-
-            for(Party respondent : this.respondents) {
-                if(respondent.getAliases().contains(t)) {
-                    return new Metadata(translateRole(t, respondent), respondent.getName());
-                }
-
-                for(String alias : respondent.getAliases()) {
-                    if(t.contains(alias)) {
-                        return new Metadata(translateRole(t, respondent), respondent.getName());
-                    }
-                }
+//      System.out.println(a.get(SemanticGraphCoreAnnotations.BasicDependenciesAnnotation.class).toString(SemanticGraph.OutputFormat.LIST));
+//        System.out.println(root.toString());
+        /* Get subject */
+        for(SemanticGraphEdge e : dependencies.edgeIterable()) {
+            if(e.getGovernor().word().equals(root.word()) && e.getRelation().toString().equals("nsubj")) {
+                System.out.println(e.getDependent().word());
+                metadata.setRelationship(e.getRelation().toString());
+                metadata.setNsubj(e.getDependent().word());
+                metadata.setClassification(translateRole(e.getDependent().word()));
+                return metadata;
             }
         }
-        return new Metadata("Unknown", "Unknown");*/
+
+        metadata.setRelationship("none");
+        metadata.setNsubj("none");
+        metadata.setClassification("Unknown");
+        return metadata;
     }
 
-    private String translateRole(String s, Party p) {
-        switch(s) {
-            case "上诉人":
-                return "Apellant";
-            case "申诉人":
-                return "Apellant"
-;            case "被上诉人":
-                return "Apellee";
-            case "被申诉人":
-                return "Apellee";
-            case "原告":
-                return "Plaintiff";
-            case "被告":
-                return "Defendant";
-            default:
-                return p.getRole();
+    private String translateRole(String s) {
+        for(Party p : this.complainants) {
+            HashSet<String> hs = p.getAliases();
+            for(String alias : hs) {
+                if(alias.contains(s) || s.contains(alias)) return p.getRole();
+            }
         }
+        for(Party p : this.respondents) {
+            HashSet<String> hs = p.getAliases();
+            for(String alias : hs) {
+                if(alias.contains(s) || s.contains(alias)) return p.getRole();
+            }
+        }
+        return "Unknown";
     }
 
     public void setParties() {

@@ -5,7 +5,6 @@ package main;
     Commented out class variables may be needed later.
  */
 
-import java.util.ArrayList;
 import java.util.HashSet;
 
 public class Party {

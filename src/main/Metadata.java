@@ -1,20 +1,40 @@
 package main;
 
 public class Metadata {
-    private String subject;
-    private String subject_name;
+    private String root_term;
+    private String relationship;
+    private String nsubj;
+    private String classification;
 
-    public Metadata() {}
-    public Metadata(String s, String n) {
-        this.subject = s;
-        this.subject_name = n;
+    public Metadata(String root_term) {
+        this.root_term = root_term;
     }
 
-    public String getSubject() {
-        return subject;
+    public String getRootTerm() {
+        return this.root_term;
     }
 
-    public String getSubjectName() {
-        return subject_name;
+    public String getRelationship() {
+        return this.relationship;
+    }
+
+    public void setRelationship(String relationship) {
+        this.relationship = relationship;
+    }
+
+    public String getNsubj() {
+        return nsubj;
+    }
+
+    public void setNsubj(String nsubj) {
+        this.nsubj = nsubj;
+    }
+
+    public String getClassification() {
+        return classification;
+    }
+
+    public void setClassification(String classification) {
+        this.classification = classification;
     }
 }

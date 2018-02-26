@@ -47,15 +47,16 @@ public class ClassiferTest {
             rec.classifyHolding();
             Metadata[] h_class = rec.getHoldingClassification();
             System.out.println("Holding Classifications:");
+            System.out.println("size: " + h_class.length);
             for(Metadata sent_class : h_class) {
-                System.out.println(sent_class.getSubject());
+                System.out.println(sent_class.getClassification());
             }
 
             rec.classifyFacts();
             Metadata[] f_class = rec.getFactsClassification();
             System.out.println("Facts Classifications:");
             for(Metadata fact_class : f_class) {
-                System.out.println(fact_class.getSubject());
+                System.out.println(fact_class.getClassification());
             }
         }
 

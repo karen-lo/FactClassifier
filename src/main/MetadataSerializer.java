@@ -12,8 +12,10 @@ public class MetadataSerializer implements JsonSerializer {
     public JsonElement serialize(Object o, Type type, JsonSerializationContext jsonSerializationContext) {
         Metadata m = (Metadata) o;
         JsonObject jobject = new JsonObject();
-        jobject.addProperty("subject", m.getSubject());
-        jobject.addProperty("subject_name", m.getSubjectName());
+        jobject.addProperty("root_term", m.getRootTerm());
+        jobject.addProperty("relationship", m.getRelationship());
+        jobject.addProperty("subject_term", m.getNsubj());
+        jobject.addProperty("subject", m.getClassification());
         return jobject;
     }
 }
