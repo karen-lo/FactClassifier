@@ -89,7 +89,7 @@ public class Record {
         IndexedWord root = dependencies.getFirstRoot();
         Metadata metadata = new Metadata(root.word());
 
-//      System.out.println(a.get(SemanticGraphCoreAnnotations.BasicDependenciesAnnotation.class).toString(SemanticGraph.OutputFormat.LIST));
+        System.out.println(m.get(SemanticGraphCoreAnnotations.BasicDependenciesAnnotation.class).toString(SemanticGraph.OutputFormat.LIST));
 //        System.out.println(root.toString());
         /* Get subject */
         for(SemanticGraphEdge e : dependencies.edgeIterable()) {
